@@ -1,0 +1,14 @@
+{
+  "nodes": [
+    {
+      "id": "public_favicon_svg",
+      "label": "favicon.svg",
+      "file_type": "image",
+      "source_file": "public/favicon.svg"
+    }
+  ],
+  "edges": [],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

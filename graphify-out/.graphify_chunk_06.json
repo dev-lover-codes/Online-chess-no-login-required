@@ -1,0 +1,14 @@
+{
+  "nodes": [
+    {
+      "id": "src_assets_vite_svg",
+      "label": "vite.svg",
+      "file_type": "image",
+      "source_file": "src/assets/vite.svg"
+    }
+  ],
+  "edges": [],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

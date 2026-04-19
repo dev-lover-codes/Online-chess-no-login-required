@@ -1,0 +1,99 @@
+{
+  "nodes": [
+    {
+      "id": "public_icons_svg",
+      "label": "icons.svg",
+      "file_type": "image",
+      "source_file": "public/icons.svg"
+    },
+    {
+      "id": "bluesky_icon",
+      "label": "Bluesky Icon",
+      "file_type": "image",
+      "source_file": "public/icons.svg"
+    },
+    {
+      "id": "discord_icon",
+      "label": "Discord Icon",
+      "file_type": "image",
+      "source_file": "public/icons.svg"
+    },
+    {
+      "id": "documentation_icon",
+      "label": "Documentation Icon",
+      "file_type": "image",
+      "source_file": "public/icons.svg"
+    },
+    {
+      "id": "github_icon",
+      "label": "GitHub Icon",
+      "file_type": "image",
+      "source_file": "public/icons.svg"
+    },
+    {
+      "id": "social_icon",
+      "label": "Social Icon",
+      "file_type": "image",
+      "source_file": "public/icons.svg"
+    },
+    {
+      "id": "x_icon",
+      "label": "X Icon",
+      "file_type": "image",
+      "source_file": "public/icons.svg"
+    }
+  ],
+  "edges": [
+    {
+      "source": "public_icons_svg",
+      "target": "bluesky_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/icons.svg"
+    },
+    {
+      "source": "public_icons_svg",
+      "target": "discord_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/icons.svg"
+    },
+    {
+      "source": "public_icons_svg",
+      "target": "documentation_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/icons.svg"
+    },
+    {
+      "source": "public_icons_svg",
+      "target": "github_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/icons.svg"
+    },
+    {
+      "source": "public_icons_svg",
+      "target": "social_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/icons.svg"
+    },
+    {
+      "source": "public_icons_svg",
+      "target": "x_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/icons.svg"
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

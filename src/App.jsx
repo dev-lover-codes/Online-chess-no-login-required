@@ -38,10 +38,13 @@ function App() {
   };
 
   const handleJoinGame = async (code) => {
+    if (!code) return;
+    const cleanCode = code.trim().toUpperCase();
+
     const { data: room, error } = await supabase
       .from('games')
       .select('*')
-      .eq('id', code)
+      .eq('id', cleanCode)
       .single();
 
     if (error || !room) {
@@ -49,21 +52,23 @@ function App() {
       return;
     }
 
-    // Returning player
+    // Case 1: Returning player (Host)
     if (room.player1_id === clientId) {
       setIsHost(true);
-      setRoomCode(code);
-      setStatus(room.status);
-      return;
-    }
-    if (room.player2_id === clientId) {
-      setIsHost(false);
-      setRoomCode(code);
+      setRoomCode(cleanCode);
       setStatus(room.status);
       return;
     }
 
-    // New player — join as Player 2
+    // Case 2: Returning player (Guest)
+    if (room.player2_id === clientId) {
+      setIsHost(false);
+      setRoomCode(cleanCode);
+      setStatus(room.status);
+      return;
+    }
+
+    // Case 3: New player joining as Player 2
     if (!room.player2_id) {
       const { error: joinErr } = await supabase
         .from('games')
@@ -75,21 +80,23 @@ function App() {
             { sender: 'System', text: 'Player 2 has joined. Game started!', ts: Date.now() },
           ],
         })
-        .eq('id', code);
+        .eq('id', cleanCode);
 
       if (joinErr) {
+        console.error('Join error:', joinErr);
         alert('Failed to join the game. Please try again.');
         return;
       }
+      
       setIsHost(false);
-      setRoomCode(code);
+      setRoomCode(cleanCode);
       setStatus('active');
       return;
     }
 
-    // Room full → spectator
+    // Case 4: Room full, join as spectator
     setIsHost(false);
-    setRoomCode(code);
+    setRoomCode(cleanCode);
     setStatus(room.status);
   };
 

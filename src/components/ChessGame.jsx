@@ -64,6 +64,7 @@ const ChessGame = ({ roomCode, clientId, onStatusChange }) => {
   }, [clientId, onStatusChange]);
 
   useEffect(() => {
+    let channel;
     const fetchAndSubscribe = async () => {
       const { data } = await supabase
         .from('games')
@@ -72,7 +73,7 @@ const ChessGame = ({ roomCode, clientId, onStatusChange }) => {
         .single();
       if (data) applyGameData(data);
 
-      const channel = supabase
+      channel = supabase
         .channel(`room-${roomCode}`)
         .on('postgres_changes', {
           event: 'UPDATE',
@@ -81,11 +82,12 @@ const ChessGame = ({ roomCode, clientId, onStatusChange }) => {
           filter: `id=eq.${roomCode}`,
         }, (payload) => applyGameData(payload.new))
         .subscribe();
-
-      return () => supabase.removeChannel(channel);
     };
 
     fetchAndSubscribe();
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
   }, [roomCode, applyGameData]);
 
   // Local timer countdown
@@ -129,27 +131,38 @@ const ChessGame = ({ roomCode, clientId, onStatusChange }) => {
     }
   }
 
-  async function handleMove(from, to) {
+  function handleMove(from, to) {
     if (!isMyTurn || isSpectator || status !== 'active') return false;
 
     const gameCopy = new Chess(game.fen());
     let result;
     try {
       result = gameCopy.move({ from, to, promotion: 'q' });
-    } catch {
+    } catch (e) {
       return false;
     }
+
     if (!result) return false;
 
+    // --- Optimistic Update ---
+    setGame(gameCopy);
+    setIsMyTurn(false); // It's no longer my turn after moving
     setMoveSquares({});
-
+    
+    // Calculate if game is finished locally
     const gameWinner =
       gameCopy.isCheckmate() ? (gameCopy.turn() === 'w' ? 'black' : 'white') :
       gameCopy.isDraw()      ? 'draw' : null;
     const gameStatus = gameWinner ? 'finished' : 'active';
     const updatedHistory = [...history, result.san];
 
-    await supabase
+    if (gameWinner) {
+      setWinner(gameWinner);
+      setStatus(gameStatus);
+    }
+
+    // --- Async Supabase Update ---
+    supabase
       .from('games')
       .update({
         fen: gameCopy.fen(),
@@ -162,7 +175,10 @@ const ChessGame = ({ roomCode, clientId, onStatusChange }) => {
         p1_timer: timers.white,
         p2_timer: timers.black,
       })
-      .eq('id', roomCode);
+      .eq('id', roomCode)
+      .then(({ error }) => {
+        if (error) console.error('Error updating game:', error);
+      });
 
     return true;
   }
